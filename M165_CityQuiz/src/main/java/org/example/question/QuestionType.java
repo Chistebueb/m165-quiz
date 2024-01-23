@@ -1,4 +1,4 @@
-package com.example.cityquiz;
+package org.example.question;
 
 public enum QuestionType {
     MOST, MORE, LESS, LEAST, ORDER

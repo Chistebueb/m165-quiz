@@ -1,4 +1,4 @@
-package com.example.cityquiz;
+package org.example;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.example.question.Question;
+import org.example.question.QuestionPicker;
+import org.example.question.QuestionType;
 
 public class JavaFX extends Application {
 
@@ -18,20 +21,12 @@ public class JavaFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Cities Quiz");
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
 
         root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
+        Scene scene = new Scene(root, 800, 500);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        QuestionPicker.displayRandomQuestion();
         primaryStage.show();
-        Question a = new Question("Which one is cool", QuestionType.MORE);
     }
 }
