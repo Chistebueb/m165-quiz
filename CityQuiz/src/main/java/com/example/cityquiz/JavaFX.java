@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class JavaFX extends Application {
 
+    public static StackPane root;
+
     public static void go(){
         launch();
     }
@@ -26,9 +28,10 @@ public class JavaFX extends Application {
             }
         });
 
-        StackPane root = new StackPane();
+        root = new StackPane();
         root.getChildren().add(btn);
         primaryStage.setScene(new Scene(root, 300, 250));
         primaryStage.show();
+        Question a = new Question("Which one is cool", QuestionType.MORE);
     }
 }
