@@ -97,15 +97,15 @@ public class Question {
     }
 
     private String findCorrectCity(QuestionType questionType, String category, List<Document> cities) {
-        Map<String, Integer> cityValues = cities.stream()
+        Map<String, Double> cityValues = cities.stream()
                 .collect(Collectors.toMap(
                         city -> city.getString("name"),
-                        city -> city.getInteger(category)
+                        city -> city.getDouble(category)
                 ));
 
         return cityValues.entrySet().stream()
                 .sorted((e1, e2) -> questionType == QuestionType.MOST || questionType == QuestionType.MORE ?
-                        Integer.compare(e2.getValue(), e1.getValue()) : Integer.compare(e1.getValue(), e2.getValue()))
+                        Double.compare(e2.getValue(), e1.getValue()) : Double.compare(e1.getValue(), e2.getValue()))
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(null);
