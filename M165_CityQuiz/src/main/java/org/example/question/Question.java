@@ -1,7 +1,6 @@
 package org.example.question;
 
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -10,7 +9,7 @@ import javafx.scene.text.Text;
 import org.bson.Document;
 import org.example.App;
 import org.example.GameLoop;
-import org.example.InitDB;
+import org.example.DBConnector;
 import org.example.JavaFX;
 
 import java.util.List;
@@ -42,7 +41,7 @@ public class Question {
         layout.getChildren().add(title);
 
         int numberOfCities = (questionType == QuestionType.MORE || questionType == QuestionType.LESS) ? 2 : 4;
-        cities = InitDB.getRandomCities(numberOfCities);
+        cities = App.getDb().getRandomCities(numberOfCities);
 
         cityButtons = cities.stream()
                 .collect(Collectors.toMap(

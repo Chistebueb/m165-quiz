@@ -1,14 +1,12 @@
 version: '3.8'
 
 services:
-  
-  # Database - Mongo DB
-  mongo:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: secretmongo
+  mongodb:
+    image: mongo:5.0
     ports:
-      - "27017:27017"
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=secretmongo
     volumes:
-      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
