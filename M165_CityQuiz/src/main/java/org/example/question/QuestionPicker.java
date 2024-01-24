@@ -89,7 +89,6 @@ public class QuestionPicker {
                 }
                 break;
         }
-        System.out.println("Invalid question: " + questionType + ", " + category);
         return "Invalid question";
     }
 

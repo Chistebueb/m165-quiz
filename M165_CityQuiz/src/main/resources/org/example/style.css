@@ -1,3 +1,8 @@
+.border {
+    -fx-border-color: #ddd;
+    -fx-border-width: 2px;
+}
+
 .root {
     -fx-background-color: #f4f4f4;
     -fx-font-family: 'Arial', sans-serif;
@@ -7,6 +12,14 @@
     -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-fill: #333;
+    -fx-translate-y: -10px;
+}
+
+.lives-display {
+    -fx-font-size: 40px;
+    -fx-text-alignment: center;
+    -fx-fill: red;
+    -fx-translate-y: -10px;
 }
 
 .city-button {
@@ -20,6 +33,7 @@
     -fx-max-width: 150px;
     -fx-min-height: 50px;
     -fx-max-height: 50px;
+    -fx-translate-y: -10px;
 }
 
 .city-button:hover {
@@ -33,15 +47,5 @@
 
 .wrong-answer {
     -fx-border-color: red;
-    -fx-border-width: 2px;
-}
-
-.wrong-border {
-    -fx-border-color: red;
-    -fx-border-width: 2px;
-}
-
-.normal-border {
-    -fx-border-color: #ddd;
     -fx-border-width: 2px;
 }

@@ -8,6 +8,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.bson.Document;
+import org.example.App;
+import org.example.GameLoop;
 import org.example.InitDB;
 import org.example.JavaFX;
 
@@ -19,21 +21,28 @@ public class Question {
 
     private StackPane root;
     private Map<String, Button> cityButtons;
+    private List<Document> cities;
+    private GameLoop gl;
 
     public Question(String question, QuestionType questionType, String category) {
+        gl = App.getGL();
         root = JavaFX.root;
         root.getChildren().clear();
-        root.getStyleClass().add("normal-border");
+        root.getStyleClass().add("border");
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
+
+        Text livesDisplay = new Text(getLivesAsHearts(gl.getHeartCount()));
+        livesDisplay.getStyleClass().add("lives-display");
+        layout.getChildren().add(livesDisplay);
 
         Text title = new Text(question);
         title.getStyleClass().add("question-title");
         layout.getChildren().add(title);
 
         int numberOfCities = (questionType == QuestionType.MORE || questionType == QuestionType.LESS) ? 2 : 4;
-        List<Document> cities = InitDB.getRandomCities(numberOfCities);
+        cities = InitDB.getRandomCities(numberOfCities);
 
         cityButtons = cities.stream()
                 .collect(Collectors.toMap(
@@ -51,43 +60,41 @@ public class Question {
 
     private Button createCityButton(String cityName, QuestionType questionType, String category) {
         Button cityButton = new Button(cityName);
-        cityButton.setOnAction(event -> handleCityButtonClick(cityName, questionType, category));
+        cityButton.setOnAction(event -> handleCityButtonClick(cityName, questionType, category, cities));
         return cityButton;
     }
 
-    private void handleCityButtonClick(String cityName, QuestionType questionType, String category) {
-        String correctCity = findCorrectCity(questionType, category);
+    private void handleCityButtonClick(String cityName, QuestionType questionType, String category, List<Document> cities) {
+        String correctCity = findCorrectCity(questionType, category, cities);
         Button correctButton = cityButtons.get(correctCity);
 
-        if (correctButton == null) {
-            System.out.println("Error: Correct city not found in the buttons map.");
-            return;
+        if (correctButton != null) {
+            correctButton.getStyleClass().add("correct-answer");
         }
-
-        correctButton.getStyleClass().add("correct-answer");
 
         if (!cityName.equals(correctCity)) {
             Button clickedButton = cityButtons.get(cityName);
-            if (clickedButton != null) {
-                clickedButton.getStyleClass().add("wrong-answer");
-            }
-            root.getStyleClass().add("wrong-border");
+            clickedButton.getStyleClass().add("wrong-answer");
+            gl.removeLife();
         }
+
+        cityButtons.values().forEach(button -> button.setDisable(true));
 
         new Thread(() -> {
             try {
                 Thread.sleep(2000);
-                Platform.runLater(QuestionPicker::displayRandomQuestion);
+                if (gl.getHeartCount() > 0) {
+                    Platform.runLater(QuestionPicker::displayRandomQuestion);
+                } else {
+                    Platform.runLater(gl::end);  // End the game if no lives are left
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
     }
 
-    private String findCorrectCity(QuestionType questionType, String category) {
-        int numberOfCities = (questionType == QuestionType.MORE || questionType == QuestionType.LESS) ? 2 : 4;
-        List<Document> cities = InitDB.getRandomCities(numberOfCities);
-
+    private String findCorrectCity(QuestionType questionType, String category, List<Document> cities) {
         Map<String, Integer> cityValues = cities.stream()
                 .collect(Collectors.toMap(
                         city -> city.getString("name"),
@@ -100,5 +107,14 @@ public class Question {
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(null);
+    }
+
+    private String getLivesAsHearts(int heartCount) {
+        String hearts = "";
+        while(heartCount > 0){
+            heartCount--;
+            hearts+="❤";
+        }
+        return hearts;
     }
 }
