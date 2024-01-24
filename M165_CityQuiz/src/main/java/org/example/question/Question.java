@@ -64,9 +64,11 @@ public class Question {
         return cityButton;
     }
 
+    private int loadTime = 400;
     private void handleCityButtonClick(String cityName, QuestionType questionType, String category, List<Document> cities) {
         String correctCity = findCorrectCity(questionType, category, cities);
         Button correctButton = cityButtons.get(correctCity);
+
 
         if (correctButton != null) {
             correctButton.getStyleClass().add("correct-answer");
@@ -76,13 +78,14 @@ public class Question {
             Button clickedButton = cityButtons.get(cityName);
             clickedButton.getStyleClass().add("wrong-answer");
             gl.removeLife();
+            loadTime += 400;
         }
 
         cityButtons.values().forEach(button -> button.setDisable(true));
 
         new Thread(() -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(loadTime);
                 if (gl.getHeartCount() > 0) {
                     Platform.runLater(QuestionPicker::displayRandomQuestion);
                 } else {
