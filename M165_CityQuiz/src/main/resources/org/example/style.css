@@ -4,8 +4,7 @@
 }
 
 .root {
-    -fx-background-color: #f4f4f4;
-    -fx-font-family: 'Arial', sans-serif;
+    -fx-font-family: 'Segoe UI', sans-serif; /* Fallback to sans-serif if Segoe UI is not available */
 }
 
 .question-title {
@@ -13,13 +12,14 @@
     -fx-font-weight: bold;
     -fx-fill: #333;
     -fx-translate-y: -10px;
+    -fx-font-family: 'Segoe UI';
 }
 
 .lives-display {
     -fx-font-size: 40px;
     -fx-text-alignment: center;
-    -fx-fill: red;
     -fx-translate-y: -10px;
+    -fx-font-family: 'Segoe UI Emoji', 'Segoe UI';
 }
 
 .city-button {
@@ -34,6 +34,7 @@
     -fx-min-height: 50px;
     -fx-max-height: 50px;
     -fx-translate-y: -10px;
+    -fx-font-family: 'Segoe UI';
 }
 
 .city-button:hover {
