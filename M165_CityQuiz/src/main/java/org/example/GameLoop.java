@@ -2,6 +2,7 @@ package org.example;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -77,10 +78,13 @@ public class GameLoop {
 
         collection.insertOne(currentUser);
 
+        long rank = collection.countDocuments(Filters.gt("score", currentUser.getInteger("score"))) + 1;
+
+
 
         List<Bson> aggregationPipeline = Arrays.asList(
                 Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
-                Aggregates.limit(9)
+                Aggregates.limit(5)
         );
 
         // Execute aggregation
@@ -139,7 +143,7 @@ public class GameLoop {
             }
         });
 
-        VBox layout = new VBox(15);
+        VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
 
         Text title = new Text("Result");
@@ -147,8 +151,18 @@ public class GameLoop {
         layout.getChildren().add(title);
 
         Text scoreText = new Text("Your score: " + score);
-        scoreText.getStyleClass().add("question-title");
+        scoreText.getStyleClass().add("result");
         layout.getChildren().add(scoreText);
+
+        Text timeText = new Text("Your time: " + getElapsedTime().toMillis() / 1000 + "s");
+        timeText.getStyleClass().add("result");
+        layout.getChildren().add(timeText);
+
+        Text rankText = new Text("Your rank: " + rank + ".");
+        rankText.getStyleClass().add("result");
+        layout.getChildren().add(rankText);
+
+        tableView.setMaxHeight(240);
 
         tableView.getStyleClass().add("table-view");
         layout.getChildren().add(tableView);
