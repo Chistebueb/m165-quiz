@@ -85,3 +85,5 @@ db.cities.insertMany([
         }
     ]
 );
+
+db.createCollection('user');

@@ -1,11 +1,14 @@
 package org.example.question;
 
+import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.bson.Document;
 import org.example.App;
 import org.example.GameLoop;
@@ -22,6 +25,8 @@ public class Question {
     private Map<String, Button> cityButtons;
     private List<Document> cities;
     private GameLoop gl;
+    private Text livesDisplay;
+    private Text animText;
 
     public Question(String question, QuestionType questionType, String category) {
         gl = App.getGL();
@@ -32,9 +37,22 @@ public class Question {
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
 
-        Text livesDisplay = new Text(getLivesAsHearts(gl.getHeartCount()));
+        livesDisplay = new Text(getLivesAsHearts(gl.getHeartCount()));
         livesDisplay.getStyleClass().add("lives-display");
         layout.getChildren().add(livesDisplay);
+
+        StackPane heartTextContainer = new StackPane();
+        heartTextContainer.getChildren().add(livesDisplay);
+
+
+        animText = new Text("❤");
+        animText.getStyleClass().add("invisible");
+
+        heartTextContainer.getChildren().add(animText);
+
+        StackPane.setMargin(animText, new Insets(0, 0, 0, 55 * (gl.getHeartCount() -1)));
+
+        layout.getChildren().add(heartTextContainer);
 
         Text title = new Text(question);
         title.getStyleClass().add("question-title");
@@ -77,7 +95,12 @@ public class Question {
             Button clickedButton = cityButtons.get(cityName);
             clickedButton.getStyleClass().add("wrong-answer");
             gl.removeLife();
+            livesDisplay.setText(getLivesAsHearts(gl.getHeartCount()));
             loadTime += 400;
+            playHeartAnim();
+        }
+        else{
+            gl.correctAnswer();
         }
 
         cityButtons.values().forEach(button -> button.setDisable(true));
@@ -88,7 +111,7 @@ public class Question {
                 if (gl.getHeartCount() > 0) {
                     Platform.runLater(QuestionPicker::displayRandomQuestion);
                 } else {
-                    Platform.runLater(gl::end);  // End the game if no lives are left
+                    Platform.runLater(gl::end);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -119,4 +142,48 @@ public class Question {
         }
         return hearts;
     }
+
+    private void playHeartAnim() {
+
+        animText.setTranslateY(0);
+        animText.setTranslateX(0); // Reset horizontal position
+        animText.setRotate(0);
+        animText.setOpacity(1.0);
+
+        TranslateTransition bounceUp = new TranslateTransition(Duration.millis(250), animText);
+        bounceUp.setByY(-25); // Move up
+        bounceUp.setInterpolator(Interpolator.SPLINE(0.1, 0.1, 0.2, 1));
+
+        // Downward fall transition with a custom interpolator for a smooth start and a more natural acceleration
+        TranslateTransition fallDown = new TranslateTransition(Duration.millis(550), animText);
+        fallDown.setByY(60); // Move down
+        fallDown.setInterpolator(Interpolator.SPLINE(0.1, 0.0, 0.3, 0));
+
+        // Rightward movement transition
+        TranslateTransition moveRight = new TranslateTransition(Duration.millis(800), animText);
+        moveRight.setByX(25); // Move slightly to the right
+
+        // Rotate transition
+        RotateTransition rotate = new RotateTransition(Duration.millis(800), animText);
+        rotate.setByAngle(20); // Slight rotation
+
+        // Fade transition
+        FadeTransition fade = new FadeTransition(Duration.millis(800), animText);
+        fade.setToValue(0); // Fade out
+
+        // Sequential transition for the bounce and fall
+        SequentialTransition bounceAndFall = new SequentialTransition(bounceUp, fallDown);
+
+        // Parallel transition to combine all effects including the rightward movement
+        ParallelTransition allTransitions = new ParallelTransition(bounceAndFall, rotate, fade, moveRight);
+
+        // Play the combined animation
+        PauseTransition pauseBeforeStarting = new PauseTransition(Duration.millis(10)); // Small pause
+        pauseBeforeStarting.setOnFinished(event -> allTransitions.play());
+        pauseBeforeStarting.play();
+
+        animText.getStyleClass().remove("invisible");
+        animText.getStyleClass().add("lives-gone-display");
+    }
+
 }

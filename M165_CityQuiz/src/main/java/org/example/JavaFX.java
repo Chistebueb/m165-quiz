@@ -1,8 +1,13 @@
 package org.example;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.question.QuestionPicker;
 
@@ -17,11 +22,39 @@ public class JavaFX extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Cities Quiz");
 
+
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+
+        Text title = new Text("Enter Username:");
+        title.getStyleClass().add("question-title");
+
+        TextField usernameInput = new TextField();
+        usernameInput.setPromptText("Username");
+        usernameInput.getStyleClass().add("input-field");
+
+        Button startBtn = new Button("Start");
+        startBtn.setOnAction(event -> handleStartButtonClick(usernameInput.getText()));
+        startBtn.getStyleClass().add("city-button");
+
+        layout.getChildren().addAll(title, usernameInput, startBtn);
         root = new StackPane();
+        root.getChildren().add(layout);
+
+
         Scene scene = new Scene(root, 800, 500);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(JavaFX.class.getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
-        QuestionPicker.displayRandomQuestion();
         primaryStage.show();
     }
+
+    private static void handleStartButtonClick(String username){
+        if (!username.equals("") && !username.equals(" ")) {
+            App.getGL().setUsername(username);
+            App.getGL().startTime();
+            QuestionPicker.displayRandomQuestion();
+        }
+    }
+
 }

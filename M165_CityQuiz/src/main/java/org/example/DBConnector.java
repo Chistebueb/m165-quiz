@@ -36,11 +36,14 @@ public class DBConnector {
         cities.aggregate(
                 Arrays.asList(Aggregates.sample(num))
         ).into(citiesList);
-            System.out.println(citiesList);
-        return citiesList;
+            return citiesList;
         }catch(MongoException me){
             System.err.println("An error occurred while getting cities" + me);
             throw me;
         }
+    }
+
+    public MongoDatabase getDb() {
+        return db;
     }
 }
