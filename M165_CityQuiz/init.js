@@ -87,3 +87,54 @@ db.cities.insertMany([
 );
 
 db.createCollection('user');
+
+db.createCollection('questions');
+
+db.questions.insertMany([
+    {
+        category: "population",
+        questionType: {
+            MOST: "Which city has the highest population?",
+            MORE: "Which city has a higher population?",
+            LESS: "Which city has a lower population?",
+            LEAST: "Which city has the lowest population?",
+        }
+    },
+    {
+        category: "populationDensity",
+        questionType: {
+            MOST: "Which city has the highest population density?",
+            MORE: "Which city has a higher population density?",
+            LESS: "Which city has a lower population density?",
+            LEAST: "Which city has the lowest population density?"
+        }
+    },
+    {
+        category: "area",
+        questionType: {
+            MOST: "Which city has the largest area?",
+            MORE: "Which city has a larger area?",
+            LESS: "Which city has a smaller area?",
+            LEAST: "Which city has the smallest area?"
+        }
+    },
+    {
+        category: "avgAge",
+        questionType: {
+            MOST: "Which city has the highest average age?",
+            MORE: "Which city has a higher average age?",
+            LESS: "Which city has a lower average age?",
+            LEAST: "Which city has the lowest average age?"
+        }
+    },
+    {
+        category: "gdpPpp",
+        questionType: {
+            MOST: "Which city has the highest GDP (PPP)?",
+            MORE: "Which city has a higher GDP (PPP)?",
+            LESS: "Which city has a lower GDP (PPP)?",
+            LEAST: "Which city has the lowest GDP (PPP)?"
+        }
+
+    }
+]);

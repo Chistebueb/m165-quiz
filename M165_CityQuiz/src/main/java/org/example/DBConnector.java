@@ -3,16 +3,14 @@ package org.example;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import javafx.util.Duration;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.example.question.QuestionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,5 +71,21 @@ public class DBConnector {
                 .append("time", elapsedTime.toMillis() / 1000);
 
         return (int) (collection.countDocuments(Filters.gt("score", currentUser.getInteger("score"))) + 1);
+    }
+
+    public String getQuestion(String category, QuestionType questionType) {
+        MongoCollection<Document> questions = db.getCollection("questions");
+        AggregateIterable<Document> result = questions.aggregate(Arrays.asList(
+                new Document("$match", new Document("category", category)),
+                new Document("$project", new Document(questionType.toString(), "$questionType." + questionType))
+        ));
+
+        Document questionDocument = result.first();
+        if (questionDocument != null && questionDocument.containsKey(questionType.toString())) {
+            return questionDocument.getString(questionType.toString());
+        }
+
+        return "No matching question found for the specified category and question type.";
+
     }
 }
