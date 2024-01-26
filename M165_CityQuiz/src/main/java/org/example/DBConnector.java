@@ -8,6 +8,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import javafx.util.Duration;
 import org.bson.Document;
@@ -46,7 +47,7 @@ public class DBConnector {
         }
     }
 
-    public List<Document> getTopPlayers(String username, int score, Duration elapsedTime) {
+    public void insertUser(String username, int score, Duration elapsedTime){
         MongoCollection<Document> collection = db.getCollection("user");
 
         Document currentUser = new Document("name", username)
@@ -54,8 +55,10 @@ public class DBConnector {
                 .append("time", elapsedTime.toMillis() / 1000);
 
         collection.insertOne(currentUser);
+    }
 
-
+    public List<Document> getTopPlayers() {
+        MongoCollection<Document> collection = db.getCollection("user");
         List<Bson> aggregationPipeline = Arrays.asList(
                 Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
                 Aggregates.limit(9)
@@ -64,5 +67,15 @@ public class DBConnector {
         // Execute aggregation
         List<Document> topPlayers = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
         return topPlayers;
+    }
+
+    public int getRank(String username, int score, Duration elapsedTime){
+        MongoCollection<Document> collection = db.getCollection("user");
+
+        Document currentUser = new Document("name", username)
+                .append("score", score)
+                .append("time", elapsedTime.toMillis() / 1000);
+
+        return (int) (collection.countDocuments(Filters.gt("score", currentUser.getInteger("score"))) + 1);
     }
 }

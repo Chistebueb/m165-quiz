@@ -70,7 +70,13 @@ public class GameLoop {
     }
 
     private void showResults(){
-        List<Document> topPlayers = App.getDb().getTopPlayers(username, score, getElapsedTime());
+
+        DBConnector dbConnector = App.getDb();
+
+        dbConnector.insertUser(username, score, getElapsedTime());
+        List<Document> topPlayers = dbConnector.getTopPlayers();
+
+        long rank = dbConnector.getRank(username, score, getElapsedTime());
 
         // Assuming you have a JavaFX TableView set up to display the results
         TableView<Player> tableView = new TableView<>();
