@@ -70,25 +70,7 @@ public class GameLoop {
     }
 
     private void showResults(){
-        MongoCollection<Document> collection = App.getDb().getDb().getCollection("user");
-
-        Document currentUser = new Document("name", username)
-                .append("score", score)
-                .append("time", getElapsedTime().toMillis() / 1000);
-
-        collection.insertOne(currentUser);
-
-        long rank = collection.countDocuments(Filters.gt("score", currentUser.getInteger("score"))) + 1;
-
-
-
-        List<Bson> aggregationPipeline = Arrays.asList(
-                Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
-                Aggregates.limit(5)
-        );
-
-        // Execute aggregation
-        List<Document> topPlayers = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
+        List<Document> topPlayers = App.getDb().getTopPlayers(username, score, getElapsedTime());
 
         // Assuming you have a JavaFX TableView set up to display the results
         TableView<Player> tableView = new TableView<>();

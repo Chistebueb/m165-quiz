@@ -8,7 +8,10 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Sorts;
+import javafx.util.Duration;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +46,23 @@ public class DBConnector {
         }
     }
 
-    public MongoDatabase getDb() {
-        return db;
+    public List<Document> getTopPlayers(String username, int score, Duration elapsedTime) {
+        MongoCollection<Document> collection = db.getCollection("user");
+
+        Document currentUser = new Document("name", username)
+                .append("score", score)
+                .append("time", elapsedTime.toMillis() / 1000);
+
+        collection.insertOne(currentUser);
+
+
+        List<Bson> aggregationPipeline = Arrays.asList(
+                Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
+                Aggregates.limit(9)
+        );
+
+        // Execute aggregation
+        List<Document> topPlayers = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
+        return topPlayers;
     }
 }
