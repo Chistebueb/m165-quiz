@@ -11,6 +11,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.question.QuestionPicker;
 
+import java.util.Objects;
+
 public class JavaFX extends Application {
 
     public static StackPane root;
@@ -44,7 +46,7 @@ public class JavaFX extends Application {
 
 
         Scene scene = new Scene(root, 800, 500);
-        scene.getStylesheets().add(JavaFX.class.getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(JavaFX.class.getResource("style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

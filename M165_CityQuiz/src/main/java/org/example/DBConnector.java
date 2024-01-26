@@ -16,20 +16,17 @@ import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DBConnector {
-    private final ConnectionString connectionString = new ConnectionString("mongodb://mongo:secretmongo@localhost:27017");
-    private MongoDatabase db;
+    private final MongoDatabase db;
     public DBConnector(){
-        try {
-            MongoClient mongoClient;
-            mongoClient = MongoClients.create(connectionString);
-            db = mongoClient.getDatabase("cityDB");
-            System.out.println("succesfully connected to cityDB");
-        }catch(RuntimeException e) {
-            throw e;
-        }
+        MongoClient mongoClient;
+        ConnectionString connectionString = new ConnectionString("mongodb://mongo:secretmongo@localhost:27017");
+        mongoClient = MongoClients.create(connectionString);
+        db = mongoClient.getDatabase("cityDB");
+        System.out.println("succesfully connected to cityDB");
     }
 
     public List<Document> getRandomCities(int num) {
@@ -38,7 +35,7 @@ public class DBConnector {
         List<Document> citiesList = new ArrayList<>();
 
         cities.aggregate(
-                Arrays.asList(Aggregates.sample(num))
+                Collections.singletonList(Aggregates.sample(num))
         ).into(citiesList);
             return citiesList;
         }catch(MongoException me){
@@ -61,12 +58,11 @@ public class DBConnector {
         MongoCollection<Document> collection = db.getCollection("user");
         List<Bson> aggregationPipeline = Arrays.asList(
                 Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
-                Aggregates.limit(9)
+                Aggregates.limit(5)
         );
 
         // Execute aggregation
-        List<Document> topPlayers = collection.aggregate(aggregationPipeline).into(new ArrayList<>());
-        return topPlayers;
+        return collection.aggregate(aggregationPipeline).into(new ArrayList<>());
     }
 
     public int getRank(String username, int score, Duration elapsedTime){

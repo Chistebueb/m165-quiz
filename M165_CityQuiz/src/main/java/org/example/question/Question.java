@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import org.bson.Document;
 import org.example.App;
 import org.example.GameLoop;
-import org.example.DBConnector;
 import org.example.JavaFX;
 
 import java.util.List;
@@ -21,12 +20,12 @@ import java.util.stream.Collectors;
 
 public class Question {
 
-    private StackPane root;
-    private Map<String, Button> cityButtons;
-    private List<Document> cities;
-    private GameLoop gl;
-    private Text livesDisplay;
-    private Text animText;
+    private final StackPane root;
+    private final Map<String, Button> cityButtons;
+    private final List<Document> cities;
+    private final GameLoop gl;
+    private final Text livesDisplay;
+    private final Text animText;
 
     public Question(String question, QuestionType questionType, String category) {
         gl = App.getGL();
@@ -126,21 +125,19 @@ public class Question {
                         city -> city.getDouble(category)
                 ));
 
-        return cityValues.entrySet().stream()
-                .sorted((e1, e2) -> questionType == QuestionType.MOST || questionType == QuestionType.MORE ?
+        return cityValues.entrySet().stream().min((e1, e2) -> questionType == QuestionType.MOST || questionType == QuestionType.MORE ?
                         Double.compare(e2.getValue(), e1.getValue()) : Double.compare(e1.getValue(), e2.getValue()))
-                .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(null);
     }
 
     private String getLivesAsHearts(int heartCount) {
-        String hearts = "";
+        StringBuilder hearts = new StringBuilder();
         while(heartCount > 0){
             heartCount--;
-            hearts+="❤";
+            hearts.append("❤");
         }
-        return hearts;
+        return hearts.toString();
     }
 
     private void playHeartAnim() {

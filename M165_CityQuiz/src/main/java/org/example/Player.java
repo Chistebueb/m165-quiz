@@ -20,7 +20,6 @@ public class Player {
         currentRank++;
     }
 
-
     public Integer getRank() {
         return score.get();
     }
