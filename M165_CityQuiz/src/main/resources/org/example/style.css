@@ -118,6 +118,7 @@
 .table-view .column-header-background .label:nth-child(odd) {
     -fx-background-color: #324960;
     -fx-text-fill: white;
+    -fx-border-radius: 10px;
 }
 
 .table-row-cell:even {

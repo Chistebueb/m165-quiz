@@ -3,7 +3,9 @@ package org.example;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -140,16 +142,26 @@ public class GameLoop {
         rankText.getStyleClass().add("result");
         layout.getChildren().add(rankText);
 
+        Button restartButton = new Button("Play Again");
+        restartButton.setOnAction(event -> restart());
+        restartButton.getStyleClass().add("city-button");
+        layout.getChildren().add(restartButton);
+
         tableView.setMaxHeight(240);
 
         tableView.getStyleClass().add("table-view");
         layout.getChildren().add(tableView);
+
 
         StackPane root = JavaFX.root;
         root.getChildren().clear();
         root.getChildren().add(layout);
     }
 
+    public void restart(){
+        App.setGl(new GameLoop());
+        JavaFX.restart();
+    }
 
     public Duration getElapsedTime() {
         return timeElapsed;

@@ -19,4 +19,8 @@ public class App {
     public static DBConnector getDb() {
         return db;
     }
+
+    public static void setGl(GameLoop gameLoop){
+        gl = gameLoop;
+    }
 }
