@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Sorts.ascending;
+
 public class DBConnector {
     private final MongoDatabase db;
     public DBConnector(){
@@ -55,7 +58,7 @@ public class DBConnector {
     public List<Document> getTopPlayers() {
         MongoCollection<Document> collection = db.getCollection("user");
         List<Bson> aggregationPipeline = Arrays.asList(
-                Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), Sorts.ascending("time"))),
+                Aggregates.sort(Sorts.orderBy(Sorts.descending("score"), ascending("time"))),
                 Aggregates.limit(5)
         );
 
@@ -73,6 +76,24 @@ public class DBConnector {
         return (int) (collection.countDocuments(Filters.gt("score", currentUser.getInteger("score"))) + 1);
     }
 
+    public List<String> getAllCategories(){
+        MongoCollection<Document> questions = db.getCollection("questions");
+        List<String> categories = new ArrayList<>();
+
+        AggregateIterable<Document> aggregationResult = questions.aggregate(Arrays.asList(
+                unwind("$category"),
+                group("$category"),
+                project(Document.parse("{_id: 0, category: '$_id'}")),
+                sort(ascending("category"))
+        ));
+
+        for (Document document : aggregationResult) {
+            String category = document.getString("category");
+            categories.add(category);
+        }
+
+        return categories;
+    }
     public String getQuestion(String category, QuestionType questionType) {
         MongoCollection<Document> questions = db.getCollection("questions");
         AggregateIterable<Document> result = questions.aggregate(Arrays.asList(

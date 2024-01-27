@@ -2,15 +2,18 @@ package org.example.question;
 
 import org.example.App;
 
+import java.util.List;
 import java.util.Random;
 
 public class QuestionPicker {
 
     public static void displayRandomQuestion() {
-        String[] categories = {"population", "populationDensity", "area", "avgAge", "gdpPpp"};
+        List<String> allCategories = App.getDb().getAllCategories();
+        String[] categories = allCategories.toArray(new String[0]);
         QuestionType[] questionTypes = QuestionType.values();
 
         Random random = new Random();
+
 
         String category = categories[random.nextInt(categories.length)];
         QuestionType questionType = questionTypes[random.nextInt(questionTypes.length)];
