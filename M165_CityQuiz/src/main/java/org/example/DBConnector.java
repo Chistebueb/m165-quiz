@@ -80,7 +80,6 @@ public class DBConnector {
         List<String> categories = new ArrayList<>();
 
         AggregateIterable<Document> aggregationResult = questions.aggregate(Arrays.asList(
-                unwind("$category"),
                 group("$category"),
                 project(Document.parse("{_id: 0, category: '$_id'}")),
                 sort(ascending("category"))
@@ -90,9 +89,9 @@ public class DBConnector {
             String category = document.getString("category");
             categories.add(category);
         }
-
         return categories;
     }
+
     public String getQuestion(String category, QuestionType questionType) {
         MongoCollection<Document> questions = db.getCollection("questions");
         AggregateIterable<Document> result = questions.aggregate(Arrays.asList(
