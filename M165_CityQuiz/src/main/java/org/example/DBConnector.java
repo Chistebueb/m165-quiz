@@ -62,7 +62,6 @@ public class DBConnector {
                 Aggregates.limit(5)
         );
 
-        // Execute aggregation
         return collection.aggregate(aggregationPipeline).into(new ArrayList<>());
     }
 

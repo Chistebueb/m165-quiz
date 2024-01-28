@@ -19,19 +19,4 @@ public class Player {
         this.rank = new SimpleIntegerProperty(currentRank);
         currentRank++;
     }
-
-    public Integer getRank() {
-        return score.get();
-    }
-    public String getName() {
-        return name.get();
-    }
-
-    public Integer getScore() {
-        return score.get();
-    }
-
-    public Double getTime() {
-        return time.get();
-    }
 }

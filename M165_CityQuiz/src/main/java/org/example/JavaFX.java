@@ -17,12 +17,13 @@ public class JavaFX extends Application {
 
     public static StackPane root;
 
+    //needed for restart
+    private static Stage primaryStageAttribute;
+
     public static void go(){
         launch();
     }
 
-    //needed for restart
-    private static Stage primaryStageAttribute;
     @Override
     public void start(Stage primaryStage) {
         primaryStageAttribute = primaryStage;

@@ -3,7 +3,6 @@ package org.example;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -40,7 +39,7 @@ public class GameLoop {
         timeline.play();
     }
     private void update(){
-
+        //here could be something, that gets executed every frame, as long as the timer runs
     }
 
     public int getHeartCount(){
@@ -50,7 +49,7 @@ public class GameLoop {
     public void removeLife(){
         heartCount--;
     }
-    public void end(){
+    public void endGame(){
         System.out.println("Game Over");
         timeline.stop();
         double stopTime = System.currentTimeMillis();
@@ -70,7 +69,7 @@ public class GameLoop {
 
         long rank = dbConnector.getRank(username, score, getElapsedTime());
 
-        // Assuming you have a JavaFX TableView set up to display the results
+
         TableView<Player> tableView = new TableView<>();
         TableColumn<Player, String> rankColumn = new TableColumn<>("Rank");
         TableColumn<Player, String> nameColumn = new TableColumn<>("Name");
@@ -108,7 +107,6 @@ public class GameLoop {
         timeColumn.prefWidthProperty().bind(tableView.widthProperty().multiply(0.25));
 
 
-        // Convert documents to your Player model and add to the table
         topPlayers.forEach(doc -> tableView.getItems().add(new Player(
                 doc.getString("name"),
                 doc.getInteger("score"),

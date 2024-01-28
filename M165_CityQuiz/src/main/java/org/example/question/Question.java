@@ -110,7 +110,7 @@ public class Question {
                 if (gl.getHeartCount() > 0) {
                     Platform.runLater(QuestionPicker::displayRandomQuestion);
                 } else {
-                    Platform.runLater(gl::end);
+                    Platform.runLater(gl::endGame);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
